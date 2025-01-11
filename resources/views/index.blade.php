@@ -195,7 +195,7 @@
                         $head=false;
                     @endphp
                 @endif
-                @if ($y<3)    
+                @if ($y<5)    
                         <article class="list-product">
                             <div class="img-block">
                                 <a href="#" class="thumbnail">
@@ -439,6 +439,7 @@
     $(document).ready(function() {
         // Call the function when the page loads
         // updateCartCount();
+        refreshCart();
 
         $('.quick_view').on('click', function(e) {
             e.preventDefault();
@@ -527,6 +528,7 @@
                 if (response.success) {
                     alert('Registration successful!');
                     $('#authModal').modal('hide');
+                    location.reload();
                 } else {
                     alert('Registration failed: ' + response.message);
                 }
@@ -537,5 +539,153 @@
             }
         });
     });
+
+    $('#loginForm').on('submit', function(e) {
+        e.preventDefault();
+
+        var email = $('#InputEmail').val();
+        var password = $('#InputPassword').val();
+
+        var Url = `{{ route('login') }}`;
+
+        var formData = {
+            _token: '{{ csrf_token() }}', // Add CSRF token here
+            email: email,
+            password: password
+        };
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    alert('Login successful!');
+                    $('#authModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert('Login failed: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error during login:', xhr.responseText);
+                alert('An error occurred. Please try again.' + xhr.responseText);
+            }
+        });
+    });
+
+    function addToCart(productId, quantity) {
+        // Check if the user is logged in
+        if (!{{ Auth::check() ? 'true' : 'false' }}) {
+            alert('Please login to add items to the cart.');
+            return;
+        }
+
+        var Url = `{{ route('cart.store') }}`;
+
+        var data = {
+            _token: '{{ csrf_token() }}',
+            id_produk: productId,
+            qty: quantity
+        };
+
+        // Send an AJAX request to add the product to the cart
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                console.log(response);
+                // const data = JSON.parse(response);
+                if (response.success) {
+                    // location.reload();
+                    refreshCart();
+                    // alert(response.message);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding product to cart:', xhr.responseText);
+                alert('An error occurred while adding the product to the cart. ' + xhr.responseText);
+            }
+        });
+    }
+
+    function refreshCart() {
+        var Url = "{{ route('cart.index') }}";
+        $.ajax({
+            url: Url,
+            type: 'GET',
+            success: function(response) {
+                const cartItems = response.cartItems;
+                const cartContent = $('.mini-cart-content ul');
+                var totalAmount = 0;
+                cartContent.empty();
+
+                if (cartItems.length > 0) {
+                    cartItems.forEach(item => {
+                        const cartItemHtml = `
+                            <li class="single-shopping-cart">
+                                <div class="shopping-cart-img">
+                                    <a href="#"><img src="${item.produk.foto1 ? '{{ asset('assets/images/product-image') }}/${item.foto1}' : '{{ asset('assets/images/product-image/Image-not-found.png') }}'}" alt="${item.produk.nama_produk}" /></a>
+                                    <span class="product-quantity">${item.qty}x</span>
+                                </div>
+                                <div class="shopping-cart-title">
+                                    <h4><a href="#">${item.produk.nama_produk}</a></h4>
+                                    <span>Rp ${item.produk.harga_produk ? item.produk.harga_produk.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'}</span>
+                                    <div class="shopping-cart-delete">
+                                        <a href="#" onclick="deleteCart(${item.id})"><i class="ion-android-cancel"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        `;
+                        console.log(item.produk.nama_produk);
+                        cartContent.append(cartItemHtml);
+                        totalAmount += item.produk.harga_produk * item.qty;
+                    });
+                } else {
+                    cartContent.append('<li class="single-shopping-cart"><div class="shopping-cart-title"><h4>No items in cart</h4></div></li>');
+                }
+
+                // const totalAmount = response.totalAmount;
+                $('.shopping-cart-total span').text(`Rp ${totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`);
+                // updateCartCount();
+                $('.count-cart').attr('data-count', cartItems.length);
+                $('.count-cart span').text(`Rp ${totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error refreshing cart:', error);
+            }
+        });
+    }
+
+    function deleteCart(id)
+    {
+        var Url = "{{ route('cart.delete') }}";
+
+        var data = {
+            _token: '{{ csrf_token() }}',
+            id: id,
+        };
+        
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                if(response.success) {
+                    alert(response.message);
+                } else {
+                    alert(response.message);
+                }
+                refreshCart();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error deleting cart:', error);
+            }
+        });
+
+    }
 </script>
 @endpush

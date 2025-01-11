@@ -4,8 +4,8 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4">
                     <div class="left-text">
-                        @if (session('id'))
-                            Welcome {{ session('name') }} to Artha Kreasi store!
+                        @if (Auth::check())
+                            Welcome {{ Auth::user()->name }} to Artha Kreasi store!
                         @else
                             Welcome you to Artha Kreasi store!
                         @endif
@@ -18,8 +18,8 @@
                                 <li class="dropdown xs-after-n">
                                     <a class="angle-icon" href="#">Settings</a>
                                     <ul class="dropdown-nav">
-                                        @if (session('id'))
-                                            <li><a href="{{ url('logout') }}">Logout</a></li>
+                                        @if (Auth::check())
+                                            <li><a href="{{ route('logout') }}">Logout</a></li>
                                         @else
                                             <li><a href="#" data-toggle="modal" data-target="#authModal">Login</a></li>
                                         @endif
@@ -50,10 +50,10 @@
                     <div class="header_account_area">
                         <div class="cart-info d-flex">
                             <div class="mini-cart-warp">
-                                <a href="#" class="count-cart" data-count="0"><span>Rp 0</span></a>
+                                <a href="#" onclick="refreshCart()" class="count-cart" data-count="0"><span>Rp 0</span></a>
                                 <div class="mini-cart-content">
                                     <ul>
-                                        <!-- Cart items will be dynamically generated here -->
+                                        
                                     </ul>
                                     <div class="shopping-cart-total">
                                         <h4>Subtotal : <span>Rp 0</span></h4>
