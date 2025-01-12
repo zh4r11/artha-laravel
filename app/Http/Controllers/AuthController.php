@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -20,8 +21,10 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             if ($user->hasRole('admin')) {
-                return redirect()->route('admin.dashboard');
+                Log::info('Login successful admin');
+                return redirect()->route('dashboard');
             } else {
+                Log::info('Login successful buyer');
                 return response()->json([
                     'message' => 'Login successful',
                     'success' => true  

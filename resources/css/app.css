@@ -1,3 +1,37 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* @import "bootstrap/dist/css/bootstrap.min.css"; */
+/* @import "datatables.net-bs4/css/dataTables.bootstrap4.min.css"; */
+/* @import "datatables.net-select-bs4/css/select.bootstrap4.min.css"; */
+/* @import "sweetalert2/dist/sweetalert2.min.css";
+@import "toastr/build/toastr.min.css"; */
+/* @import "bootstrap-social"; */
+
+.toast::before {
+    display: none;
+}
+
+.swal2-confirm {
+    background-color: #28a745; /* Warna hijau konfirmasi */
+    border-color: #28a745; /* Warna border tombol */
+    color: white; /* Warna teks tombol */
+}
+
+/* Mengatur warna tombol batal */
+.swal2-cancel {
+    background-color: #dc3545; /* Warna merah batal */
+    border-color: #dc3545; /* Warna border tombol */
+    color: white; /* Warna teks tombol */
+}
+
+/* Mengatur warna ikon SweetAlert2 */
+.swal2-icon-custom {
+    color: #dc3545; /* Warna ikon sesuai dengan warna tombol batal */
+}
+
+/* Mengatur warna modal */
+.swal2-popup {
+    background-color: #f8f9fa; /* Warna latar belakang modal */
+}
+
+.password-toggle-icon {
+    display: none; /* Atau gunakan visibility: hidden; jika hanya ingin menyembunyikannya tanpa menghilangkan ruangnya */
+  }

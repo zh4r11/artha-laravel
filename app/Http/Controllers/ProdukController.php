@@ -12,6 +12,19 @@ class ProdukController extends Controller
      */
     public function index()
     {
+        return view('admin.produk.index'); 
+    }
+
+    public function getAllProduks()
+    {
+        $produk = Produk::all();
+        return response()->json([
+            'data' => $produk,
+        ]);
+    }
+
+    public function indexStore()
+    {
         $produk = Produk::all();
         return view('index', compact('produk'));
     }
@@ -21,7 +34,7 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.produk.form', ['isFormEdit' => false]);
     }
 
     /**
@@ -29,7 +42,36 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the request
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'harga_produk' => 'required|numeric',
+            'harga_diskon' => 'nullable|numeric',
+            'deskripsi' => 'nullable|string',
+            'photos.*' => 'image|mimes:jpeg,png,jpg|max:2048', // Validate each image
+        ]);
+
+        // Save the product data
+        $produk = new Produk();
+        $produk->nama_produk = $request->nama_produk;
+        $produk->harga_produk = $request->harga_produk;
+        $produk->harga_diskon = $request->harga_diskon;
+        $produk->deskripsi = $request->deskripsi;
+        $produk->save();
+
+        if ($request->hasFile('photos')) {
+            $photos = $request->file('photos');
+            for ($i = 1; $i <= count($photos); $i++) {
+                $path = $photos[$i]->store('public/assets/images/products-images');
+                $produk->foto.$i = $path;
+            }
+            $produk->save();
+        }
+
+        return response()->json([
+            'message' => 'Produk berhasil ditambahkan',
+            'status' => true,
+        ]);
     }
 
     /**
