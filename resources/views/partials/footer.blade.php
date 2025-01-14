@@ -6,7 +6,7 @@
                 <div class="col-md-6 col-lg-4">
                     <!-- footer logo -->
                     <div class="footer-logo">
-                        <a href="{{ url('/') }}"><img src="{{ asset('assets/images/logo/footer-logo.png') }}" alt="Footer Logo" /></a>
+                        <a href="{{ url('/') }}"><img src="{{ asset('storage/assets/images/logo/logoh.png') }}" alt="Footer Logo" /></a>
                     </div>
                     <!-- footer logo -->
                     <div class="about-footer">
