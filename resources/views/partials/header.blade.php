@@ -1,32 +1,28 @@
 <header class="main-header">
-    <div class="header-top-nav" style="background-color: #4fb68d;">
+    <div class="header-top-nav" style="background-color: #c1680e;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-4 col-md-4">
                     <div class="left-text">
                         @if (Auth::check())
-                            Welcome {{ Auth::user()->name }} to Artha Kreasi store!
+                            <p>Welcome {{ Auth::user()->name }} to Artha Kreasi store! </p>
                         @else
-                            Welcome you to Artha Kreasi store!
+                            <p>Welcome you to Artha Kreasi store!</p>
                         @endif
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-8 text-right">
                     <div class="header-right-nav">
-                        <div class="dropdown-navs">
-                            <ul>
-                                <li class="dropdown xs-after-n">
-                                    <a class="angle-icon" href="#">Settings</a>
-                                    <ul class="dropdown-nav">
-                                        @if (Auth::check())
-                                            <li><a href="{{ route('logout') }}">Logout</a></li>
-                                        @else
-                                            <li><a href="#" data-toggle="modal" data-target="#authModal">Login</a></li>
-                                        @endif
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
+                        <ul class="res-xs-flex">
+                            <li class="after-n">
+                                {{-- <a class="angle-icon" href="#">Settings</a> --}}
+                                @if (Auth::check())
+                                    <a href="{{ route('logout') }}">Logout</a>
+                                @else
+                                    <a href="#" data-toggle="modal" data-target="#authModal">Login</a>
+                                @endif
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

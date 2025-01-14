@@ -109,7 +109,7 @@
                             </div>
                         </div>
                         <ul class="product-flag">
-                            <li class="new">New</li>
+                            <li class="new">Best</li>
                         </ul>
                         <div class="product-decs">
                             <h2><a href="#" class="product-link">{{ $product->nama_produk }}</a></h2>
@@ -421,6 +421,7 @@
 </div>
 <!-- Modal end -->
 @endsection
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 @push('scripts')  
 <script>
@@ -534,13 +535,18 @@
         var email = $('#InputEmail').val();
         var password = $('#InputPassword').val();
 
-        var Url = `{{ route('login') }}`;
+        var Url = `{{ route('login-processed') }}`;
 
         var formData = {
-            _token: '{{ csrf_token() }}', // Add CSRF token here
             email: email,
             password: password
         };
+
+        $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         $.ajax({
             url: Url,
@@ -572,10 +578,15 @@
         var Url = `{{ route('cart.store') }}`;
 
         var data = {
-            _token: '{{ csrf_token() }}',
             id_produk: productId,
             qty: quantity
         };
+
+        $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
         // Send an AJAX request to add the product to the cart
         $.ajax({
@@ -586,9 +597,12 @@
                 console.log(response);
                 // const data = JSON.parse(response);
                 if (response.success) {
-                    // location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Succeded!',
+                        text: response.message
+                    });
                     refreshCart();
-                    // alert(response.message);
                 } else {
                     alert(response.message);
                 }
@@ -628,7 +642,6 @@
                                 </div>
                             </li>
                         `;
-                        console.log(item.produk.nama_produk);
                         cartContent.append(cartItemHtml);
                         totalAmount += item.produk.harga_produk * item.qty;
                     });
@@ -650,30 +663,57 @@
 
     function deleteCart(id)
     {
-        var Url = "{{ route('cart.delete') }}";
-
-        var data = {
-            _token: '{{ csrf_token() }}',
-            id: id,
-        };
-        
-        $.ajax({
-            url: Url,
-            type: 'POST',
-            data: data,
-            success: function(response) {
-                if(response.success) {
-                    alert(response.message);
-                } else {
-                    alert(response.message);
+        Swal.fire({
+        icon: 'warning',
+        html: `Apakah Anda yakin ingin menghapus barang dalam keranjang?`,
+        showCancelButton: true,
+        cancelButtonText: 'Batal',
+        confirmButtonText: 'Hapus',
+        customClass: {
+          confirmButton: 'swal2-confirm',
+          cancelButton: 'swal2-cancel',
+          icon: 'swal-icon-custom',
+          popup: 'swal2-popup'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Sedang menghapus...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                Swal.showLoading();
                 }
-                refreshCart();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error deleting cart:', error);
-            }
-        });
+            });
 
+            var Url = "{{ route('cart.delete') }}";
+
+            var data = {
+                _token: '{{ csrf_token() }}',
+                id: id,
+            };
+            
+            $.ajax({
+                url: Url,
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    if(response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Succeded!',
+                            text: response.message
+                        });
+                        refreshCart();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting cart:', error);
+                }
+            });
+        }
+      });
     }
 </script>
 @endpush

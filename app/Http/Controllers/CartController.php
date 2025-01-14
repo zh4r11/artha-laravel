@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Keranjang;
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -13,7 +15,9 @@ class CartController extends Controller
      */
     public function index()
     {
-        $keranjang = Keranjang::where('id_pelanggan', Auth::id())->with('produk')->get();
+        $user = Auth::user();
+        $pelanggan = Pelanggan::where('email', $user->email)->first();
+        $keranjang = Keranjang::where('id_pelanggan', $pelanggan->id)->with('produk')->get();
         return response()->json([
             'message' => 'Success',
             'cartItems' => $keranjang
@@ -38,8 +42,11 @@ class CartController extends Controller
             'id_produk' => 'required|integer',
             'qty' => 'required|integer|min:1',
         ]);
-        
-        $existingCart = Keranjang::where('id_pelanggan', Auth::id())
+
+        $user = Auth::user();
+        $pelanggan = Pelanggan::where('email', $user->email)->first();
+        Log::debug("message", ['pelanggan' => $pelanggan]);
+        $existingCart = Keranjang::where('id_pelanggan', $pelanggan->id)
             ->where('id_produk', $validatedData['id_produk'])
             ->first();
 
@@ -48,12 +55,12 @@ class CartController extends Controller
             $existingCart->save();
 
             return response()->json([
-                'message' => 'Product added to cart successfully',
+                'message' => 'Quantity product increased to cart successfully',
                 'success' => true
             ], 201);
         }else {
             $keranjang = new Keranjang();
-            $keranjang->id_pelanggan = Auth::id();
+            $keranjang->id_pelanggan = $pelanggan->id;
             $keranjang->id_produk = $validatedData['id_produk'];
             $keranjang->qty = $validatedData['qty'];
             $keranjang->save();

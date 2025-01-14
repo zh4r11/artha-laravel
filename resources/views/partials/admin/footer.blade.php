@@ -1,7 +1,7 @@
 <!-- resources/views/partials/footer.blade.php -->
 <footer class="main-footer">
   <div class="footer-left">
-    &copy; 2024 <div class="bullet"></div> Prestige Aqiqah</a>
+    &copy; 2025 <div class="bullet"></div> Artha Kreasi</a>
   </div>
   {{-- <div class="footer-right">
     2.3.0

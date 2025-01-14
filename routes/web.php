@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\PelangganController;
 
 Route::get('/admin-page', function () {
     return view('admin.dashboard');
@@ -42,5 +43,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/produk/{produk}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
         Route::post('/produk/update', [ProdukController::class, 'update'])->name('produk.update');
         Route::delete('/produk/{produk}', [ProdukController::class, 'destroy'])->name('produk.destroy');
+
+        Route::get('/pelanggan-list', [PelangganController::class, 'indexPelanggan'])->name('pelanggan-list');
+        Route::get('/pelanggan', [PelangganController::class, 'index'])->name('pelanggan.index');
+        Route::get('/pelanggan/create', [PelangganController::class, 'create'])->name('pelanggan.create');
+        Route::post('/pelanggan', [PelangganController::class, 'store'])->name('pelanggan.store');
+        Route::get('/pelanggan/{pelanggan}', [PelangganController::class, 'show'])->name('pelanggan.show');
+        Route::get('/pelanggan/{pelanggan}/edit', [PelangganController::class, 'edit'])->name('pelanggan.edit');
+        Route::post('/pelanggan/update', [PelangganController::class, 'update'])->name('pelanggan.update');
+        Route::delete('/pelanggan/{pelanggan}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
     });
 });
