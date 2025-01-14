@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-md-2 col-sm-2">
                     <div class="logo">
-                        <a href="{{ url('/') }}"><img src="{{ asset('assets/images/logo/logo.jpg') }}" alt="logo.jpg" /></a>
+                        <a href="{{ url('/') }}"><img src="{{ asset('storage/assets/images/logo/logoh.png') }}" alt="logo.jpg" /></a>
                     </div>
                 </div>
                 <div class="col-md-10 col-sm-10">

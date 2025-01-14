@@ -9,12 +9,6 @@
         <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('assets/images/slider-image/sample-1.jpg') }});">
             <div class="container">
                 <div class="slider-content-1 slider-animated-1 text-left">
-                    <span class="animated">NOT FRIED NOT BAKED</span>
-                    <h1 class="animated">
-                        Freeze Dried Fruits <br />
-                        Pineapple Coconut
-                    </h1>
-                    <p class="animated">Free Shipping On Qualified Orders Over $35</p>
                 </div>
             </div>
         </div>
@@ -23,12 +17,6 @@
         <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('assets/images/slider-image/sample-2.jpg') }});">
             <div class="container">
                 <div class="slider-content-1 slider-animated-1 text-left">
-                    <span class="animated">100% NATURAL</span>
-                    <h1 class="animated">
-                        Organic Fruits <br />
-                        Summer Drinks
-                    </h1>
-                    <p class="animated">fresh New pack Brusting Fruits</p>
                 </div>
             </div>
         </div>
