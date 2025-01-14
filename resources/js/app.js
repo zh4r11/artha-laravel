@@ -3,7 +3,7 @@
 // import 'toastr/build/toastr.min.css';
 // import 'sweetalert2/dist/sweetalert2.min.css';
 
-import $ from "jquery";
+// import $ from "jquery";
 import "./bootstrap";
 // import "datatables";
 // import "datatables.net";
@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 import "toastr/build/toastr.min.css";
 import toastr from "toastr";
 
-// window.$ = window.jQuery = $;
+window.$ = window.jQuery = $;
 toastr.options = {
     closeButton: true,
     debug: false,

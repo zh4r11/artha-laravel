@@ -12,7 +12,7 @@
 <div class="section-header">
   <h1>Master Produk</h1>
   <div class="section-header-breadcrumb">
-    <div class="breadcrumb-item"><a href="{{ route('produk-list') }}">Master Produk</a></div>
+    <div class="breadcrumb-item"><a href="{{ route('produk.index') }}">Master Produk</a></div>
     <div class="breadcrumb-item active" aria-current="page">{{$isFormEdit ? 'Edit Produk' : 'Tambah Produk'}}</div>
   </div>
 </div>
@@ -24,7 +24,8 @@
           <h4 class="text-white">{{ $isFormEdit ? 'Edit' : 'Tambah' }} Barang</h4>
         </div>
         <div class="card-body">
-          <form>
+          <form name="form-example-2" enctype="multipart/form-data">
+            <input type="hidden" name="id_produk" id="id_produk" value="{{$produk -> id ?? ''}}">
             <div class="row">
               <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
@@ -50,7 +51,7 @@
               <div class="col-12 col-md-12 col-lg-12">
                 <div class="form-group">
                   <label>Deskripsi Produk*</label>
-                  <textarea id="input-deskripsi-produk" class="form-control" placeholder="Masukan Deskripsi Produk">{{$produk -> deskripsi ?? old('deskripsi')}}</textarea>
+                  <textarea id="input-deskripsi-produk" class="form-control" style="height: 200px" placeholder="Masukan Deskripsi Produk">{{$produk -> deskripsi ?? old('deskripsi')}}</textarea>
                   <div class="invalid-feedback" id="deskripsi-produk-error"></div>
                 </div>
               </div>
@@ -58,6 +59,7 @@
                 <div class="form-group">
                   <label>Foto Produk</label>
                   <div class="input-images-1" style="padding-top: .5rem;"></div>
+                  <input type="hidden" name="deleted_photos" id="deleted-photos">
                 </div>
               </div>
             </div>
@@ -71,7 +73,7 @@
   </div>
 </div>
 @endsection
-{{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 
 @push('scripts')
@@ -79,14 +81,44 @@
 <script type="text/javascript" src="https://christianbayer.github.io/image-uploader/dist/image-uploader.min.js
 "></script>
 <script>
+    <?php
+      // Transform foto fields into an array
+      $existingImages = [];
+      if (!empty($produk->foto1)) {
+          $existingImages[] = ['url' => $produk->foto1];
+      }
+      if (!empty($produk->foto2)) {
+          $existingImages[] = ['url' => $produk->foto2];
+      }
+      if (!empty($produk->foto3)) {
+          $existingImages[] = ['url' => $produk->foto3];
+      }
+      if (!empty($produk->foto4)) {
+          $existingImages[] = ['url' => $produk->foto4];
+      }
+    ?>
+
+    let imageCounter = 0;
+    function generateImageId() {
+      return imageCounter++;
+    }
+    let existingImages = <?php echo json_encode($existingImages); ?>;
+    let baseDomain = "{{ env('APP_URL') }}"; // Pass base domain to JavaScript
+    let baseUrl = baseDomain + '/storage/assets/images/products-images/'; // Construct full URL
+    let preloadedImages = existingImages.map(image => ({
+      id: generateImageId(), // Generate a unique ID for each image
+      src: baseUrl + image.url // Construct full URL
+    }));
+
+    console.log(preloadedImages);
+
   $(document).ready(function() {
-    let isKodeBarangValid = true;
-    let isNamaBarangValid = true;
-    let isQtyValid = true;
+    
     $('.input-images-1').imageUploader({
+      preloaded: preloadedImages,
       imagesInputName: 'photos',
       maxSize: 2 * 1024 * 1024, // 2MB
-      maxFiles: 10,
+      maxFiles: 4,
       extensions: ['.jpg', '.jpeg', '.png'],
       resize: 1000,
       label: 'Drag and drop images or click to select',
@@ -100,50 +132,59 @@
       allowedExtensions: ['.jpg', '.jpeg', '.png']
     });
 
-    $('#input-satuan').on('input', function() {
-      const inputValue = $(this).val();
-      const $input = $(this);
-      const $textError = $('#satuan-error');
-      if (inputValue.length == 0) {
-        $input.addClass('is-invalid');
-        $textError.text('Satuan harus di isi!');
-        isNamaBarangValid = false;
-      } else if (inputValue.includes("'")) {
-        $input.addClass('is-invalid');
-        $textError.text(`Karakter apostrof (') tidak diizinkan.`);
-        isNamaBarangValid = false;
-      } else {
-        $input.removeClass('is-invalid');
-        isNamaBarangValid = true;
+    let deletedPhotos = [];
+
+    $('.input-images-1').on('imageDeleted', function(event, image) {
+      if (image.id) {
+        deletedPhotos.push(image.id); // Track deleted photos
       }
+      $('#deleted-photos').val(JSON.stringify(deletedPhotos)); // Update hidden input
     });
 
-    $('#btn-simpan').click((e) => {
-      e.preventDefault();
-      $('#btn-simpan').prop('disabled', true).html('Loading...');
+    $('form').on('submit', function (event){
+      event.preventDefault();
+      event.stopPropagation();
 
-      const formData = new FormData();
-      const images = $('.input-images-1').imageUploader('getImages');
+      let $form = $(this);
+      // Create FormData object
+      let formData = new FormData();
 
-      // Check if images is an array and has items
-      if (Array.isArray(images) && images.length > 0) {
-          images.forEach((image, index) => {
-              formData.append('photos[]', image.file);
-          });
-      } else {
-          console.log('No images uploaded.');
+      const kode = $('#id_produk').val();
+      const namaProduk = $('#input-nama-produk').val();
+      const hargaProduk = $('#input-harga-produk').val();
+      const hargaDiskon = $('#input-harga-diskon').val();
+      const deskripsi = $('#input-deskripsi-produk').val();
+      const deletedPhotos = $('#deleted-photos').val();
+
+      console.log(namaProduk, hargaProduk, hargaDiskon, deskripsi, kode, deletedPhotos);
+
+      formData.append('nama_produk', namaProduk);
+      formData.append('harga_produk', hargaProduk);
+      formData.append('harga_diskon', hargaDiskon);
+      formData.append('deskripsi', deskripsi);
+      formData.append('kode', kode);
+      formData.append('deleted_photos', deletedPhotos);
+
+      // Get the input file
+      let $inputImages = $form.find('input[name^="images"]');
+      if (!$inputImages.length) {
+          $inputImages = $form.find('input[name^="photos"]')
       }
 
-      // Append other form data
-      formData.append('nama_produk', $('#input-nama-produk').val());
-      formData.append('harga_produk', $('#input-harga-produk').val());
-      formData.append('harga_diskon', $('#input-harga-diskon').val());
-      formData.append('deskripsi', $('#input-deskripsi-produk').val());
+      for (let file of $inputImages.prop('files')) {
+        formData.append('photos[]', file);
+      }
+      
+      // Append form fields
+      
       console.log(formData);
-
       const isFormEdit = <?php echo json_encode($isFormEdit); ?>;
-      isFormEdit ? EditBarang(formData) : TambahBarang(formData);
-      $('#btn-simpan').prop('disabled', false).html('Simpan');
+      
+      if (isFormEdit) {
+        EditBarang(formData, kode); // Call EditBarang for editing
+      } else {
+        TambahBarang(formData); // Call TambahBarang for adding
+      }
     });
   });
 
@@ -160,6 +201,8 @@
         url: storeUrl,
         method: 'POST',
         data: data,
+        processData: false, // Required for FormData
+        contentType: false, // Required for FormData
         success: function(response) {
           if (response.status) {
             $('#btn-simpan').prop('disabled', false).html('Simpan');
@@ -182,19 +225,22 @@
     }
   }
 
-  function EditBarang(data) {
+  function EditBarang(data, kode) {
     if (data) {
       $.ajaxSetup({
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
       });
-
-      var updateUrl = `{{ route('produk.update', ':kode') }}`.replace(':kode', data.kode);
+      console.log(data);
+      var updateUrl = `{{ route('produk.update') }}`;
+      console.log(updateUrl);
       $.ajax({
         url: updateUrl,
-        method: 'PUT',
+        method: 'POST',
         data: data,
+        processData: false, // Required for FormData
+        contentType: false, // Required for FormData
         success: function(response) {
           if (response.status) {
             $('#btn-simpan').prop('disabled', false).html('Simpan');

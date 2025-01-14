@@ -35,16 +35,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     
     Route::prefix('admin-page')->group(function () {
         Route::get('/produk-list', [ProdukController::class, 'getAllProduks'])->name('produk-list');
-        Route::resource('produk', ProdukController::class)->names([
-            'index' => 'produk.index',
-            'create' => 'produk.create',
-            'store' => 'produk.store',
-            'show' => 'produk.show',
-            'edit' => 'produk.edit',
-            'update' => 'produk.update',
-            'destroy' => 'produk.destroy'
-        ]);
-        // Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
-        // Route::get('/produk/create', [ProdukController::class, 'create'])->name('produk.create');
+        Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
+        Route::get('/produk/create', [ProdukController::class, 'create'])->name('produk.create');
+        Route::post('/produk', [ProdukController::class, 'store'])->name('produk.store');
+        Route::get('/produk/{produk}', [ProdukController::class, 'show'])->name('produk.show');
+        Route::get('/produk/{produk}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+        Route::post('/produk/update', [ProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/produk/{produk}', [ProdukController::class, 'destroy'])->name('produk.destroy');
     });
 });

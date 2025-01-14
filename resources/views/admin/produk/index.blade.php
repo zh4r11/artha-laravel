@@ -48,7 +48,7 @@
 </div>
 </div>
 @endsection
-{{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -137,7 +137,7 @@
   function EditBarang(button) {
     const kode = button.getAttribute('data-id');
     if (kode != null) {
-      window.location.href = `/barang/${kode}/edit`
+      window.location.href = `/admin-page/produk/${kode}/edit`
     }
   }
 
@@ -147,7 +147,7 @@
     if (kode) {
       Swal.fire({
         icon: 'warning',
-        html: `Apakah Anda yakin ingin menghapus barang <strong>${kode}</strong>?`,
+        html: `Apakah Anda yakin ingin menghapus barang?`,
         showCancelButton: true,
         cancelButtonText: 'Batal',
         confirmButtonText: 'Hapus',
@@ -183,7 +183,7 @@
               //   localStorage.setItem('toastType', 'success');
               //   window.location.href = "{{ route('produk.index') }}";
               // }
-              if (response.success) {
+              if (response.status) {
                 // Reload DataTables on success
                 var table = $('#table-1').DataTable();
                 table.ajax.reload();

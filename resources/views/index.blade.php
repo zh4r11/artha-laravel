@@ -111,8 +111,8 @@
                     <article class="list-product">
                         <div class="img-block">
                             <a href="#" class="thumbnail">
-                                <img class="first-img" src="{{ asset('assets/images/product-image/' . ($product->foto1 ?? 'Image-not-found.png')) }}" alt="" />
-                                <img class="second-img" src="{{ asset('assets/images/product-image/' . ($product->foto2 ?? 'Image-not-found.png')) }}" alt="" />
+                                <img class="first-img" src="{{ asset('storage/assets/images/products-images/' . ($product->foto1 ?? 'Image-not-found.png')) }}" alt="" />
+                                <img class="second-img" src="{{ asset('storage/assets/images/products-images/' . ($product->foto2 ?? 'Image-not-found.png')) }}" alt="" />
                             </a>
                             <div class="quick-view">
                                 <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal" data-id="{{ $product->id }}">
@@ -199,8 +199,8 @@
                         <article class="list-product">
                             <div class="img-block">
                                 <a href="#" class="thumbnail">
-                                    <img class="first-img" src="{{ asset('assets/images/product-image/' . ($product->foto1 ?? 'Image-not-found.png')) }}" alt="" />
-                                    <img class="second-img" src="{{ asset('assets/images/product-image/' . ($product->foto2 ?? 'Image-not-found.png')) }}" alt="" />
+                                    <img class="first-img" src="{{ asset('storage/assets/images/products-images/' . ($product->foto1 ?? 'Image-not-found.png')) }}" alt="" />
+                                    <img class="second-img" src="{{ asset('storage/assets/images/products-images/' . ($product->foto2 ?? 'Image-not-found.png')) }}" alt="" />
                                 </a>
                                 <div class="quick-view">
                                     <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal" data-id="{{ $product->id }}">
@@ -224,8 +224,8 @@
                         <article class="list-product">
                             <div class="img-block">
                                 <a href="#" class="thumbnail">
-                                    <img class="first-img" src="{{ asset('assets/images/product-image/' . ($product->foto1 ?? 'Image-not-found.png')) }}" alt="" />
-                                    <img class="second-img" src="{{ asset('assets/images/product-image/' . ($product->foto2 ?? 'Image-not-found.png')) }}" alt="" />
+                                    <img class="first-img" src="{{ asset('storage/assets/images/products-images/' . ($product->foto1 ?? 'Image-not-found.png')) }}" alt="" />
+                                    <img class="second-img" src="{{ asset('storage/assets/images/products-images/' . ($product->foto2 ?? 'Image-not-found.png')) }}" alt="" />
                                 </a>
                                 <div class="quick-view">
                                     <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal" data-id="{{ $product->id }}">
@@ -328,22 +328,22 @@
                         <div class="quickview-wrap mt-15">
                             <div class="quickview-slide-active owl-carousel nav owl-nav-style owl-nav-style-2" role="tablist">
                                 <a class="active" data-toggle="tab" href="#pro-1"><img src="{{ asset('assets/images/product-image/Image-not-found.png') }}" alt="" /></a>
-                                <a data-toggle="tab" href="#pro-2"><img src="{{ asset('assets/images/product-image/organic/product-1.jpg') }}" alt="" /></a>
-                                <a data-toggle="tab" href="#pro-3"><img src="{{ asset('assets/images/product-image/organic/product-1.jpg') }}" alt="" /></a>
-                                <a data-toggle="tab" href="#pro-4"><img src="{{ asset('assets/images/product-image/organic/product-1.jpg') }}" alt="" /></a>
+                                <a data-toggle="tab" href="#pro-2"><img src="#" alt="" /></a>
+                                <a data-toggle="tab" href="#pro-3"><img src="#" alt="" /></a>
+                                <a data-toggle="tab" href="#pro-4"><img src="#" alt="" /></a>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-7 col-sm-12 col-xs-12">
                         <div class="product-details-content quickview-content">
-                            <h2>Originals Kaval Windbr</h2>
+                            <h2></h2>
 
                             <div class="pricing-meta">
                                 <ul>
-                                    <li class="old-price not-cut">Rp angka</li>
+                                    <li class="old-price not-cut"></li>
                                 </ul>
                             </div>
-                            <p>Ini sepatu, liat kan. Ukurannya 36-45</p>
+                            <p></p>
                             <div class="pro-details-quality">
                                 <div class="cart-plus-minus">
                                     <div class="dec qtybutton">-</div>
@@ -461,10 +461,10 @@
                     $('#exampleModal .modal-body .old-price').text('Rp ' + response.harga_produk.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
                     $('#exampleModal .modal-body p').text(response.deskripsi);
                     
-                    $image1 = response.foto1 ? '{{ asset('assets/images/product-image/') }}/' + response.foto1 : '{{ asset('assets/images/product-image/Image-not-found.png') }}';
-                    $image2 = response.foto2 ? '{{ asset('assets/images/product-image/') }}/' + response.foto2 : '{{ asset('assets/images/product-image/Image-not-found.png') }}';
-                    $image3 = response.foto3 ? '{{ asset('assets/images/product-image/') }}/' + response.foto3 : '{{ asset('assets/images/product-image/Image-not-found.png') }}';
-                    $image4 = response.foto4 ? '{{ asset('assets/images/product-image/') }}/' + response.foto4 : '{{ asset('assets/images/product-image/Image-not-found.png') }}';
+                    $image1 = response.foto1 ? '{{ asset('storage/assets/images/products-images/') }}/' + response.foto1 : '{{ asset('storage/assets/images/products-images/Image-not-found.png') }}';
+                    $image2 = response.foto2 ? '{{ asset('storage/assets/images/products-images/') }}/' + response.foto2 : '{{ asset('storage/assets/images/products-images/Image-not-found.png') }}';
+                    $image3 = response.foto3 ? '{{ asset('storage/assets/images/products-images/') }}/' + response.foto3 : '{{ asset('storage/assets/images/products-images/Image-not-found.png') }}';
+                    $image4 = response.foto4 ? '{{ asset('storage/assets/images/products-images/') }}/' + response.foto4 : '{{ asset('storage/assets/images/products-images/Image-not-found.png') }}';
 
                     // Update product images
                     $('#pro-1 img').attr('src', $image1);
