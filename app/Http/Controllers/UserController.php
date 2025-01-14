@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -33,7 +35,7 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = new \App\Models\User();
+        $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
@@ -41,11 +43,18 @@ class UserController extends Controller
 
         $user->assignRole('buyer');
 
+        $cekPelanggan = Pelanggan::where('email', $user->email)->first();
+        if (!$cekPelanggan) {
+            $pelanggan = new Pelanggan();
+            $pelanggan->email = $user->email;
+            $pelanggan->nama_pelanggan = $user->name;
+            $pelanggan->save();
+        }
+
         return response()->json([
             'message' => 'Buyer registered successfully',
             'success' => true]
             , 201);
-        // return redirect()->route('index')->with('success', 'Buyer registered successfully');
     }
 
     public function storeAdmin(Request $request)
@@ -56,7 +65,7 @@ class UserController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = new \App\Models\User();
+        $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);

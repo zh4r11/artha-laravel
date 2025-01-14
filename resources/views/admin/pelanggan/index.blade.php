@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title', 'Master Produk')
+@section('title', 'Pelanggan')
 
 @push('css')
 <!-- DataTables CSS from CDN -->
@@ -13,12 +13,12 @@
 
 @section('content')
 <div class="section-header">
-  <h1>Master Produk</h1>
+  <h1>Pelanggan</h1>
 </div>
 <div class="section-body">
   <div class="d-flex justify-content-end align-items-center mb-3">
-    <a href="{{ route('produk.create') }}" class="btn btn-primary">
-      <i class="fas fa-plus"></i> Tambah Produk
+    <a href="{{ route('pelanggan.create') }}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Tambah Pelanggan
     </a>
   </div>
   <div class="row">
@@ -29,12 +29,11 @@
             <table class="table table-striped" id="table-1">
               <thead>
                 <tr>
-                    <th>Action</th>
-                  <th>Kode Produk</th>
-                  <th>Nama Produk</th>
-                  <th>Harga Produk</th>
-                  <th>Harga Diskon</th>
-                  <th>Stok</th>
+                  <th>Action</th>
+                  <th>Kode</th>
+                  <th>Nama</th>
+                  <th>Email</th>
+                  <th>Telp</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,7 +58,7 @@
 <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
 <script>
   $(document).ready(function() {
-    var Url = "{{ route('produk-list') }}";
+    var Url = "{{ route('pelanggan-list') }}";
     $('#table-1').DataTable({
       language: {
         emptyTable: 'No data available'
@@ -67,10 +66,6 @@
       responsive: true,
       scrollX: false,
       columnDefs: [
-     {
-        width: '5%',
-        targets: [5]
-      },
       {
         targets: [1],
         visible: false
@@ -78,13 +73,9 @@
       {
         targets: [0],
         width:'10%'
-      },
-      {
-        targets: [3,4],
-        width:'15%'
       }],
       order: [
-        [1, 'asc']
+        [2, 'asc']
       ],
       ajax: {
         url: Url,
@@ -97,8 +88,8 @@
           "render": function(data, type, row) {
             // Create buttons dynamically
             var buttons = [];
-            buttons.push('<a href="#" data-id="' + row.id + '" onclick="EditBarang(this)">Edit</a>&nbsp;&nbsp;');
-            buttons.push('<a href="#" data-id="' + row.id + '" onclick="HapusBarang(this)">Hapus</a>');
+            buttons.push('<a href="#" data-id="' + row.id + '" onclick="EditPelanggan(this)">Edit</a>&nbsp;&nbsp;');
+            buttons.push('<a href="#" data-id="' + row.id + '" onclick="HapusPelanggan(this)">Hapus</a>');
             return buttons.join(' ');
           }
         },
@@ -106,19 +97,14 @@
           data: 'id'
         },
         {
-          data: 'nama_produk'
+          data: 'nama_pelanggan'
         },
         {
-            data: 'harga_produk',
-            render: $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
+            data: 'email'
         },
         {
-          data: 'harga_diskon',
-          render: $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
-        },
-        {
-          data: 'qty_produk'
-        },
+          data: 'tlp_pelanggan'
+        }
       ]
     });
 
@@ -134,14 +120,14 @@
     }
   });
 
-  function EditBarang(button) {
+  function EditPelanggan(button) {
     const kode = button.getAttribute('data-id');
     if (kode != null) {
-      window.location.href = `/admin-page/produk/${kode}/edit`
+      window.location.href = `/admin-page/pelanggan/${kode}/edit`
     }
   }
 
-  function HapusBarang(button) {
+  function HapusPelanggan(button) {
     const kode = button.getAttribute('data-id');
 
     if (kode) {
@@ -173,11 +159,16 @@
             }
           });
 
-          var deleteUrl = `{{ route('produk.destroy', ':kode') }}`.replace(':kode', kode);
+          var deleteUrl = `{{ route('pelanggan.destroy', ':kode') }}`.replace(':kode', kode);
           $.ajax({
             url: deleteUrl,
             method: 'DELETE',
             success: function(response) {
+              // if (response.success) {
+              //   localStorage.setItem('toastMessage', response.message);
+              //   localStorage.setItem('toastType', 'success');
+              //   window.location.href = "{{ route('produk.index') }}";
+              // }
               if (response.status) {
                 // Reload DataTables on success
                 var table = $('#table-1').DataTable();

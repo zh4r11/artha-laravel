@@ -17,6 +17,7 @@
       </li>
 
       <li><a class="nav-link" href="#"><i class="fas fa-shopping-basket"></i> <span>Pesanan</span></a></li>
+      <li><a class="nav-link" href="{{ route('pelanggan.index') }}"><i class="fas fa-user"></i> <span>Pelanggan</span></a></li>
 
       <li class="nav-item dropdown">
         <a href="#" class="nav-link has-dropdown"><i class="fas fa-sliders-h"></i><span>Master</span></a>
