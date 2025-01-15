@@ -46,8 +46,8 @@
                     <div class="header_account_area">
                         <div class="cart-info d-flex">
                             <div class="mini-cart-warp">
-                                <a href="#" onclick="refreshCart()" class="count-cart" data-count="0"><span>Rp 0</span></a>
-                                <div class="mini-cart-content">
+                                <a href="javascript:void(0)" class="count-cart" data-count="0"><span>Rp 0</span></a>
+                                <div class="mini-cart-content" style="max-height: 500px; overflow-y: auto;">
                                     <ul>
                                         
                                     </ul>
