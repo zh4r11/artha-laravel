@@ -6,7 +6,7 @@
 <div class="slider-area">
     <div class="slider-active-3 owl-carousel slider-hm8 owl-dot-style">
         <!-- Slider Single Item Start -->
-        <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('assets/images/slider-image/sample-1.jpg') }});">
+        <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('storage/assets/images/slider-image/slider1.png') }});">
             <div class="container">
                 <div class="slider-content-1 slider-animated-1 text-left">
                 </div>
