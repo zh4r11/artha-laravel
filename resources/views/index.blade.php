@@ -339,7 +339,7 @@
                                     <div class="inc qtybutton">+</div>
                                 </div>
                                 <div class="pro-details-cart btn-hover">
-                                <a href="#" class="add-to-cart-btn" data-product-id=""> + Add To Cart</a>
+                                <a href="javascript:void(0)" class="add-to-cart-btn" data-product-id=""> + Add To Cart</a>
                                 </div>
                             </div>
                         </div>
@@ -485,6 +485,42 @@
                 }
             });
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select the plus and minus buttons and the input field
+        const minusButton = document.querySelector('.cart-plus-minus .dec.qtybutton');
+        const plusButton = document.querySelector('.cart-plus-minus .inc.qtybutton');
+        const inputField = document.querySelector('.cart-plus-minus-box');
+        const addToCartButton = document.querySelector('.add-to-cart-btn');
+
+        // Add event listeners to the buttons
+        minusButton.addEventListener('click', function () {
+            let currentValue = parseInt(inputField.value);
+            if (currentValue > 1) {
+                inputField.value = currentValue - 1;
+            }
+        });
+
+        plusButton.addEventListener('click', function () {
+            let currentValue = parseInt(inputField.value);
+            inputField.value = currentValue + 1;
+        });
+
+        // Add event listener to the "Add to Cart" button
+        addToCartButton.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default link behavior
+
+            // Get the product ID and quantity
+            const productId = addToCartButton.getAttribute('data-product-id');
+            const quantity = parseInt(inputField.value);
+            addToCart(productId, quantity);
+            $('#exampleModal').modal('hide');
+        });
+    });
+
+    $('#exampleModal').on('hidden.bs.modal', function () {
+        $('.cart-plus-minus-box').val(1);
     });
 
     $('#registerForm').on('submit', function(e) {
