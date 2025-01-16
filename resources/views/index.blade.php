@@ -139,7 +139,7 @@
         <div class="row">
             <div class="col-md-3 col-xs-12">
                 <div class="banner-wrapper">
-                    <a href="shop-4-column.html"><img src="{{ asset('assets/images/banner-image/1.jpg') }}" alt="" /></a>
+                    <a href="shop-4-column.html"><img src="{{ asset('storage/assets/images/banner/banner1.png') }}" alt="" /></a>
                 </div>
             </div>
             <div class="col-md-6 col-xs-12 mt-res-sx-30px">
