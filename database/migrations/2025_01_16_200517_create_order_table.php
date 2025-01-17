@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pelanggan')->constrained('pelanggan');
+            $table->integer('pelanggan_id');
             $table->string('telepon');
             $table->string('no_order');
             $table->enum('status', ['new', 'processed', 'shiped', 'delivered', 'completed', 'canceled']);

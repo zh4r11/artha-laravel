@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_details', function (Blueprint $table) {
-            $table->id();
-            $table->integer('id_order');
-            $table->integer('id_produk');
-            $table->integer('qty');
-            $table->timestamps();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('tracking_number')->nullable();
+            $table->decimal('total', 15, 2)->default(0);
         });
-        
     }
 
     /**
@@ -26,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_details');
+        Schema::table('orders', function (Blueprint $table) {
+            //
+        });
     }
 };
