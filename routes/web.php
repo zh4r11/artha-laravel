@@ -29,6 +29,10 @@ Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart-delete', [CartController::class, 'destroy'])->name('cart.delete');
 
+Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store.buyer');
+Route::get('/orders', [OrderController::class, 'index'])->name('order.index.buyer');
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin-page', function () {
         return view('admin.dashboard');

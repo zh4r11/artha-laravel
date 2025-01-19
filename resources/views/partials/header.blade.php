@@ -55,7 +55,7 @@
                                         <h4>Subtotal : <span>Rp 0</span></h4>
                                     </div>
                                     <div class="shopping-cart-btn text-center">
-                                        <a class="default-btn" href="{{ url('checkout') }}">checkout</a>
+                                        <a class="default-btn" href="{{ route('checkout') }}">checkout</a>
                                     </div>
                                 </div>
                             </div>
@@ -76,3 +76,57 @@
         </div>
     </div>
 </header>
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+           refreshCart() 
+        });
+        function refreshCart() {
+            var Url = "{{ route('cart.index') }}";
+            $.ajax({
+                url: Url,
+                type: 'GET',
+                success: function(response) {
+                    const cartItems = response.cartItems;
+                    const cartContent = $('.mini-cart-content ul');
+                    var totalAmount = 0;
+                    cartContent.empty();
+
+                    if (cartItems.length > 0) {
+                        cartItems.forEach(item => {
+                            const cartItemHtml = `
+                                <li class="single-shopping-cart">
+                                    <div class="shopping-cart-img">
+                                        <a href="#"><img src="${item.produk.foto1 ? '{{ asset('assets/images/product-image') }}/${item.foto1}' : '{{ asset('assets/images/product-image/Image-not-found.png') }}'}" alt="${item.produk.nama_produk}" /></a>
+                                        <span class="product-quantity">${item.qty}x</span>
+                                    </div>
+                                    <div class="shopping-cart-title">
+                                        <h4><a href="#">${item.produk.nama_produk}</a></h4>
+                                        <span>Rp ${item.produk.harga_produk ? item.produk.harga_produk.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'}</span>
+                                        <div class="shopping-cart-delete">
+                                            <a href="#" onclick="deleteCart(${item.id})"><i class="ion-android-cancel"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+                            `;
+                            cartContent.append(cartItemHtml);
+                            totalAmount += item.produk.harga_produk * item.qty;
+                        });
+                    } else {
+                        cartContent.append('<li class="single-shopping-cart"><div class="shopping-cart-title"><h4>No items in cart</h4></div></li>');
+                    }
+
+                    // const totalAmount = response.totalAmount;
+                    $('.shopping-cart-total span').text(`Rp ${totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`);
+                    // updateCartCount();
+                    $('.count-cart').attr('data-count', cartItems.length);
+                    $('.count-cart span').text(`Rp ${totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error refreshing cart:', error);
+                }
+            });
+        }
+    </script>
+@endpush

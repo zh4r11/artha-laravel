@@ -9,6 +9,7 @@ class Order extends Model
     protected $table = 'orders';
     protected $fillable = [
         'pelanggan_id',
+        'nama',
         'telepon',
         'no_order',
         'status',
@@ -19,7 +20,8 @@ class Order extends Model
         'kode_pos',
         'alamat',
         'total',
-        'tracking_number'
+        'tracking_number',
+        'catatan'
     ];
 
     public function pelanggan()

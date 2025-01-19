@@ -29,7 +29,7 @@
             <table class="table table-striped" id="table-1">
               <thead>
                 <tr>
-                    <th>Action</th>
+                  <th>Action</th>
                   <th>Kode Produk</th>
                   <th>Nama Produk</th>
                   <th>Harga Produk</th>

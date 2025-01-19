@@ -3,9 +3,6 @@
 @section('title', 'Pelanggan')
 
 @push('css')
-<!-- DataTables CSS from CDN -->
-{{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.3/css/select.bootstrap4.min.css"> --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
@@ -33,7 +30,7 @@
                   <th>No. Order</th>
                   <th>Nama</th>
                   <th>Telp</th>
-                  <th>Tracking Number<th>
+                  <th>Tracking Number</th>
                   <th>Total</th>
                 </tr>
               </thead>
@@ -46,8 +43,44 @@
     </div>
   </div>
 </div>
-</div>
 @endsection
+<!-- Modal for Order Details -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderDetailModalLabel">Order Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <strong>No. Order:</strong> <span id="orderNo"></span><br>
+          <strong>Nama:</strong> <span id="customerName"></span><br>
+          <strong>Telp:</strong> <span id="customerPhone"></span><br>
+          <strong>Tracking Number:</strong> <span id="trackingNumber"></span><br>
+          <strong>Total:</strong> <span id="orderTotal"></span><br>
+        </div>
+        <table class="table mt-3">
+          <thead>
+            <tr>
+              <th>Nama Produk</th>
+              <th>Quantity</th>
+              <th>Harga Satuan</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody id="orderDetailsBody">
+            <!-- Order details will be populated here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="updateStatusButton">Update Status</button>
+      </div>
+    </div>
+  </div>
+</div>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 @push('scripts')
@@ -68,15 +101,23 @@
       scrollX: false,
       columnDefs: [
       {
-        targets: [1],
-        visible: false
+        targets: [0],
+        width:'15%'
       },
       {
-        targets: [0],
-        width:'10%'
+        targets: 1,
+        width:'15%'
+      },
+      {
+        targets: 2,
+        width:'30%'
+      },
+      {
+        targets: 3,
+        width:'15%'
       }],
       order: [
-        [2, 'asc']
+        [1, 'asc']
       ],
       ajax: {
         url: Url,
@@ -84,19 +125,14 @@
       },
       columns: [
         {
-          // Define a custom column for buttons
           "data": null,
           "render": function(data, type, row) {
-            // Create buttons dynamically
             var buttons = [];
             buttons.push('<a href="#" data-id="' + row.id + '" onclick="EditOrder(this)">Edit</a>&nbsp;&nbsp;');
             buttons.push('<a href="#" data-id="' + row.id + '" onclick="UpdateOrder(this)">Update</a>&nbsp;&nbsp;');
             buttons.push('<a href="#" data-id="' + row.id + '" onclick="DetailOrder(this)">Detail</a>&nbsp;&nbsp;');
             return buttons.join(' ');
           }
-        },
-        {
-          data: 'id'
         },
         {
           data: 'no_order'
@@ -111,100 +147,74 @@
           data: 'tracking_number'
         },
         {
-          data: 'total'
+          data: 'total',
+          render: $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
         }
       ]
     });
 
-    var toastMessage = localStorage.getItem('toastMessage');
-    var toastType = localStorage.getItem('toastType');
+    $('#updateStatusButton').on('click', function() {
+      const orderId = $('#orderNo').text(); // Assuming orderNo contains the order ID
+      const newStatus = prompt("Enter new status:"); // Prompt for new status
 
-    if (toastMessage) {
-      if (toastType === 'success') {
-        toastr.success(toastMessage);
+      if (newStatus) {
+        $.ajax({
+          url: `/admin-page/order/${orderId}/update-status`, // Adjust this URL to match your route
+          method: 'POST',
+          data: {
+            status: newStatus,
+            _token: '{{ csrf_token() }}' // Include CSRF token for security
+          },
+          success: function(response) {
+            alert(response.message);
+            $('#orderDetailModal').modal('hide'); // Close the modal after updating
+          },
+          error: function(xhr) {
+            alert('Error updating status: ' + xhr.responseJSON.message);
+          }
+        });
       }
-      localStorage.removeItem('toastMessage');
-      localStorage.removeItem('toastType');
-    }
+    });
   });
 
-  function EditOrder(button) {
-    const kode = button.getAttribute('data-id');
-    if (kode != null) {
-      window.location.href = `/admin-page/order/${kode}/edit`
-    }
-  }
+  function DetailOrder(button) {
+      const orderId = button.getAttribute('data-id');
+      $.ajax({
+        url: `/admin-page/order/${orderId}`, // Adjust this URL to match your route
+        method: 'GET',
+        success: function(response) {
+          // Populate the modal with order response
+          response.data.forEach(function(data) {
+            $('#orderNo').text(data.no_order);
+            $('#customerName').text(data.nama);
+            $('#customerPhone').text(data.telepon);
+            $('#trackingNumber').text(data.tracking_number);
 
-  function HapusOrder(button) {
-    const kode = button.getAttribute('data-id');
+            const hargaProduk = data.total;
 
-    if (kode) {
-      Swal.fire({
-        icon: 'warning',
-        html: `Apakah Anda yakin ingin menghapus barang?`,
-        showCancelButton: true,
-        cancelButtonText: 'Batal',
-        confirmButtonText: 'Hapus',
-        customClass: {
-          confirmButton: 'swal2-confirm',
-          cancelButton: 'swal2-cancel',
-          icon: 'swal-icon-custom',
-          popup: 'swal2-popup'
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            title: 'Sedang menghapus...',
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
+            const formattedHarga = hargaProduk 
+                ? `Rp. ${Math.floor(hargaProduk).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` 
+                : 'Rp. 0'; // Fallback if harga_produk is not available
+
+            $('#orderTotal').text(formattedHarga);
+            
+            // Populate the modal with order details
+            $('#orderDetailsBody').empty();
+            if (data.order_detail) {
+              data.order_detail.forEach(function(detail) {
+                $('#orderDetailsBody').append('<tr><td>' + detail.produk.nama_produk + '</td><td>' + detail.qty + '</td><td> Rp. ' + detail.produk.harga_produk.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '</td><td> Rp. ' + (detail.qty * detail.produk.harga_produk).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + '</td></tr>');
+              });
+            } else {
+              $('#orderDetailsBody').append('<tr><td colspan="2">No details available</td></tr>');
             }
+            $('#orderDetailModal').modal('show');
           });
           
-          $.ajaxSetup({
-            headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-          });
-
-          var deleteUrl = `{{ route('order.destroy', ':kode') }}`.replace(':kode', kode);
-          $.ajax({
-            url: deleteUrl,
-            method: 'DELETE',
-            success: function(response) {
-              // if (response.success) {
-              //   localStorage.setItem('toastMessage', response.message);
-              //   localStorage.setItem('toastType', 'success');
-              //   window.location.href = "{{ route('produk.index') }}";
-              // }
-              if (response.status) {
-                // Reload DataTables on success
-                var table = $('#table-1').DataTable();
-                table.ajax.reload();
-
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Sukses!',
-                  text: response.message
-                });
-              } else {
-                Swal.fire('Error', response.message, 'error');
-              }
-            },
-            error: function(xhr, status, error) {
-              toastr.error('Terjadi kesalahan : ' + error);
-            }
-          });
         }
       });
-    } else {
-      toastr.warning('Kode barang tidak ditemukan.');
     }
-  }
 </script>
 @endpush
 
 @section('js-page')
-<!-- <script src="{{ asset('admin/assets/js/page/index-0.js') }}"></script> -->
-<!-- <script src="../assets/js/page/index-0.js"></script> -->
 @endsection
