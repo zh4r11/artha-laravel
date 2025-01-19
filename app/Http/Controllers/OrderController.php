@@ -7,6 +7,7 @@ use App\Models\Keranjang;
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Supporrt\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -78,6 +79,30 @@ class OrderController extends Controller
             'alamat' => 'required|string',
         ]);
         
+        $order = new Order();
+        $order->nama = $request->nama;
+        $order->pelanggan_id = $pelanggan->id;
+        $order->telepon = $request->telepon;
+        $order->no_order = 'ORD-' . time();
+        $order->status = 'new';
+        $order->provinsi = $request->provinsi;
+        $order->kota = $request->kota;
+        $order->kecamatan = $request->kecamatan;
+        $order->kelurahan = $request->kelurahan;
+        $order->kode_pos = $request->kode_pos;
+        $order->alamat = $request->alamat;
+        $order->save();
+
+        $orderCart = Keranjang::where('id_pelanggan', $pelanggan->id)->get();
+        
+        foreach ($orderCart as $cart) {
+            $order->orderDetail()->create([
+                'id_order' => $order->id,
+                'id_produk' => $cart->id_produk,
+                'qty' => $cart->qty,
+            ]);
+            $order->total += $cart->produk->harga_produk * $cart->qty;
+        }
         
         $order->save();
         $orderCart->each->delete();
