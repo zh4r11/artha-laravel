@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PelangganController;
 
@@ -27,6 +28,10 @@ Route::get('/produk/{id}', [ProdukController::class, 'show'])->name('produk.deta
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart-delete', [CartController::class, 'destroy'])->name('cart.delete');
+
+Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store.buyer');
+Route::get('/orders', [OrderController::class, 'index'])->name('order.index.buyer');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin-page', function () {
@@ -52,5 +57,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/pelanggan/{pelanggan}/edit', [PelangganController::class, 'edit'])->name('pelanggan.edit');
         Route::post('/pelanggan/update', [PelangganController::class, 'update'])->name('pelanggan.update');
         Route::delete('/pelanggan/{pelanggan}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
+
+        Route::get('/order-list', [OrderController::class, 'indexOrder'])->name('order-list');
+        Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+        Route::get('/order/create', [OrderController::class, 'create'])->name('order.create');
+        Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+        Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
+        Route::get('/order/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');
+        Route::post('/order/update', [OrderController::class, 'update'])->name('order.update');
+        Route::delete('/order/{order}', [OrderController::class, 'destroy'])->name('order.destroy');
     });
 });

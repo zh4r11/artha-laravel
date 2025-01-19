@@ -45,7 +45,6 @@ class CartController extends Controller
 
         $user = Auth::user();
         $pelanggan = Pelanggan::where('email', $user->email)->first();
-        Log::debug("message", ['pelanggan' => $pelanggan]);
         $existingCart = Keranjang::where('id_pelanggan', $pelanggan->id)
             ->where('id_produk', $validatedData['id_produk'])
             ->first();
@@ -114,5 +113,9 @@ class CartController extends Controller
             'message' => 'Cart item deleted successfully',
             'success' => true
         ], 200);
+    }
+
+    public function checkout() {
+        return view('checkout'); 
     }
 }
