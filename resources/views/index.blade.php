@@ -34,8 +34,8 @@
                     <div class="single-static pb-res-md-0 pb-res-sm-0 pb-res-xs-0">
                         <img src="{{ asset('assets/images/icons/static-icons-1.png') }}" alt="" class="img-responsive" />
                         <div class="single-static-meta">
-                            <h4>Free Shipping</h4>
-                            <p>On all orders over $75.00</p>
+                            <h4>Gratis Biaya Pengiriman</h4>
+                            <p>Minimal transaksi Rp.xx </p>
                         </div>
                     </div>
                 </div>
@@ -45,8 +45,8 @@
                     <div class="single-static pb-res-md-0 pb-res-sm-0 pb-res-xs-0 pt-res-xs-20">
                         <img src="{{ asset('assets/images/icons/static-icons-2.png') }}" alt="" class="img-responsive" />
                         <div class="single-static-meta">
-                            <h4>Free Returns</h4>
-                            <p>Returns are free within 9 days</p>
+                            <h4>Garansi Bebas Pengembalian</h4>
+                            <p>Pengembalian gratis dalam X hari</p>
                         </div>
                     </div>
                 </div>
@@ -56,8 +56,8 @@
                     <div class="single-static pt-res-md-30 pb-res-sm-30 pb-res-xs-0 pt-res-xs-20">
                         <img src="{{ asset('assets/images/icons/static-icons-3.png') }}" alt="" class="img-responsive" />
                         <div class="single-static-meta">
-                            <h4>100% Payment Secure</h4>
-                            <p>Your payment are safe with us.</p>
+                            <h4>Keamanan Pembayaran</h4>
+                            <p>Transaksi belanja yang praktis dan terpercaya</p>
                         </div>
                     </div>
                 </div>
@@ -67,8 +67,8 @@
                     <div class="single-static pt-res-md-30 pb-res-sm-30 pt-res-xs-20">
                         <img src="{{ asset('assets/images/icons/static-icons-4.png') }}" alt="" class="img-responsive" />
                         <div class="single-static-meta">
-                            <h4>Support 24/7</h4>
-                            <p>Contact us 24 hours a day</p>
+                            <h4>Layanan 24/7</h4>
+                            <p>Hubungi kami 24 jam</p>
                         </div>
                     </div>
                 </div>
@@ -250,7 +250,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="banner-inner">
-                    <a href="{{ url('shop-4-column') }}"><img src="{{ asset('assets/images/banner-image/4.jpg') }}" alt="" /></a>
+                    <a href="{{ url('shop-4-column') }}"><img src="{{ asset('storage/assets/images/banner/banner4.png') }}" alt="" /></a>
                 </div>
             </div>
         </div>
