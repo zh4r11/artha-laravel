@@ -61,7 +61,6 @@ class ProdukController extends Controller
 
         if ($request->hasFile('photos')) {
             $photos = $request->file('photos');
-            Log::info("photo", ['photos' => count($photos)]);
         
             // Loop through the photos array
             for ($i = 0; $i < count($photos); $i++) {

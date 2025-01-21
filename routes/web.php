@@ -31,7 +31,11 @@ Route::post('/cart-delete', [CartController::class, 'destroy'])->name('cart.dele
 
 Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store.buyer');
-Route::get('/orders', [OrderController::class, 'index'])->name('order.index.buyer');
+Route::get('/orders', [OrderController::class, 'indexBuyer'])->name('order.index.buyer');
+Route::post('/order/upload-bukti', [OrderController::class, 'uploadBukti'])->name('upload-bukti');
+Route::post('/order/download-invoice', [OrderController::class, 'downloadInvoice'])->name('download-invoice');
+Route::post('/order/complete-order', [OrderController::class, 'completeOrder'])->name('complete-order');
+Route::post('/order/cancel-order', [OrderController::class, 'cancelOrder'])->name('cancel-order');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin-page', function () {
@@ -66,5 +70,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/order/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');
         Route::post('/order/update', [OrderController::class, 'update'])->name('order.update');
         Route::delete('/order/{order}', [OrderController::class, 'destroy'])->name('order.destroy');
+        Route::post('/order/update-status', [OrderController::class, 'updateStatus'])->name('order.update-status');
     });
 });

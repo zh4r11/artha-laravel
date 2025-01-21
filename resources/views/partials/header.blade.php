@@ -40,7 +40,10 @@
                     <div class="main-navigation d-none d-lg-block">
                         <ul>
                             <li><a href="{{ url('/') }}">Home</a></li>
-                            <li><a href="{{ url('contact') }}">Contact Us</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            @if (Auth::check())
+                                <li><a href="{{ route('order.index.buyer') }}">Orders</a></li>
+                            @endif
                         </ul>
                     </div>
                     <div class="header_account_area">

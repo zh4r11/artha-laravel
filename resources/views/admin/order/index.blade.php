@@ -32,6 +32,7 @@
                   <th>Telp</th>
                   <th>Tracking Number</th>
                   <th>Total</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -76,7 +77,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="updateStatusButton">Update Status</button>
+        <button type="button" id="updateStatusButton" class="btn btn-primary" data-id="" data-status="" onclick="updateStatusButton(this)">Update Status</button>
       </div>
     </div>
   </div>
@@ -92,6 +93,7 @@
 <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
 <script>
   $(document).ready(function() {
+    // Initialize DataTable
     var Url = "{{ route('order-list') }}";
     $('#table-1').DataTable({
       language: {
@@ -110,11 +112,11 @@
       },
       {
         targets: 2,
-        width:'30%'
+        width:'20%'
       },
       {
         targets: 3,
-        width:'15%'
+        width:'10%'
       }],
       order: [
         [1, 'asc']
@@ -149,33 +151,100 @@
         {
           data: 'total',
           render: $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
+        },
+        {
+          data: 'status',
+          render: function(data, type, row) {
+            return data.toUpperCase();
+          }
         }
       ]
     });
-
-    $('#updateStatusButton').on('click', function() {
-      const orderId = $('#orderNo').text(); // Assuming orderNo contains the order ID
-      const newStatus = prompt("Enter new status:"); // Prompt for new status
-
-      if (newStatus) {
-        $.ajax({
-          url: `/admin-page/order/${orderId}/update-status`, // Adjust this URL to match your route
-          method: 'POST',
-          data: {
-            status: newStatus,
-            _token: '{{ csrf_token() }}' // Include CSRF token for security
-          },
-          success: function(response) {
-            alert(response.message);
-            $('#orderDetailModal').modal('hide'); // Close the modal after updating
-          },
-          error: function(xhr) {
-            alert('Error updating status: ' + xhr.responseJSON.message);
-          }
-        });
-      }
-    });
   });
+
+  function updateStatusButton(button) {
+    const orderId = button.getAttribute('data-id'); // Assuming orderNo contains the order ID
+    const status = button.getAttribute('data-status'); // Assuming status is a select element
+    var Url = `{{ route('order.update-status') }}`;
+    if (status == 'processed') { // Check if the new status is 'processed'
+        // Use SweetAlert to prompt for the tracking number
+        $('#orderDetailModal').modal('hide');
+        Swal.fire({
+            title: 'Enter Tracking Number',
+            input: 'text',
+            inputLabel: 'Tracking Number',
+            inputPlaceholder: 'Enter tracking number',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            preConfirm: (trackingNumber) => {
+                if (!trackingNumber) {
+                    Swal.showValidationMessage('You need to enter a tracking number');
+                }
+                return trackingNumber;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const trackingNumber = result.value; // Get the tracking number from the result
+                
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    url: Url, // Adjust this URL to match your route
+                    method: 'POST',
+                    data: {
+                        id:orderId,
+                        tracking_number: trackingNumber // Include the tracking number in the data
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                          title: 'Success!',
+                          text: response.message,
+                          icon: 'success',
+                          confirmButtonText: 'Close'
+                        });
+                        $('#table-1').DataTable().ajax.reload();
+                    },
+                    error: function(xhr) {
+                        alert('Error updating status: ' + xhr.responseJSON.message);
+                    }
+                });
+            }
+        });
+    } else {
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      $.ajax({
+        url: Url, // Adjust this URL to match your route
+        method: 'POST',
+        data: {
+            id:orderId
+        },
+        success: function(response) {
+            Swal.fire({
+              title: 'Success!',
+              text: response.message,
+              icon: 'success',
+              confirmButtonText: 'Close'
+            });
+            $('#orderDetailModal').modal('hide');
+            $('#table-1').DataTable().ajax.reload();
+        },
+        error: function(xhr) {
+            alert('Error updating status: ' + xhr.responseJSON.message);
+        }
+      });
+    }
+  }
 
   function DetailOrder(button) {
       const orderId = button.getAttribute('data-id');
@@ -189,7 +258,8 @@
             $('#customerName').text(data.nama);
             $('#customerPhone').text(data.telepon);
             $('#trackingNumber').text(data.tracking_number);
-
+            $('#updateStatusButton').attr('data-id', data.id);
+            $('#updateStatusButton').attr('data-status', data.status);
             const hargaProduk = data.total;
 
             const formattedHarga = hargaProduk 

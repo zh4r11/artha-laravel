@@ -172,8 +172,8 @@
                 data: orderData,
                 success: function(response) {
                     // Handle success response
-                    alert('Order saved successfully!');
-                    // Optionally redirect or update UI
+                    downloadInvoice(response.id);
+                    window.location.href = "{{ route('order.index.buyer') }}";
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
@@ -181,6 +181,37 @@
                 }
             });
         });
-    })
+    });
+
+    function downloadInvoice(id) {
+        const formData = new FormData();
+        formData.append('id', id);
+        var Url = `{{ route('download-invoice') }}`;
+        $.ajaxSetup({
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: Url,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                Swal.close();
+                if (response.success) {
+                    window.open(response.link, '_blank');
+                } else {
+                    Swal.fire('Error', 'Failed to download invoice', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.close();
+                Swal.fire('Error', 'Failed to generate invoice', 'error');
+            }
+        });
+    }
 </script>
 @endpush

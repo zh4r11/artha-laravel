@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Keranjang;
 use App\Models\Pelanggan;
+use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use LaravelDaily\Invoices\Invoice;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Supporrt\Facades\Log;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
 
 class OrderController extends Controller
 {
@@ -27,31 +31,12 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * Get order details by ID.
-     */
-    public function getOrderDetails($id)
-    {
-        $order = Order::with(['pelanggan', 'orderDetail.produk'])->findOrFail($id);
-        
-        // Compact the response
-        return response()->json([
-            'no_order' => $order->no_order,
-            'nama' => $order->nama,
-            'telepon' => $order->telepon,
-            'tracking_number' => $order->tracking_number,
-            'total' => $order->total,
-            'order_detail' => $order->orderDetail->map(function($detail) {
-                return [
-                    'qty' => $detail->qty,
-                    'produk' => [
-                        'nama_produk' => $detail->produk->nama_produk,
-                    ],
-                ];
-            }),
-        ]);
+    public function indexBuyer() {
+        $user = Auth::user();
+        $pelanggan = Pelanggan::where('email', $user->email)->first();
+        $orders = Order::where('pelanggan_id', $pelanggan->id)->get();
+        return view('order', compact('orders'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -109,6 +94,7 @@ class OrderController extends Controller
 
         return response()->json([
             'status' => true,
+            'id' => $order->id,
             'message' => 'Order created',
         ]);
     }
@@ -146,5 +132,118 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function uploadBukti(Request $request) {
+        $order = Order::find($request->id);
+
+        // Generate a unique file name
+        $fileName = time() . '_' . $request->document->getClientOriginalName();
+            
+        // Store the photo with the custom file name
+        $path = $request->document->storeAs('assets/buktibayar', $fileName, 'public');
+
+        $order->bukti_bayar = $fileName;
+        $order->status = 'processed';
+        $order->status_pembayaran = true;
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Upload Succeded'
+        ]);
+    }
+
+    public function downloadInvoice(Request $request) {
+        $order = Order::find($request->id);
+        $orderDetail = OrderDetail::where('id_order', $order->id)->with('produk')->get();
+
+        $customer = new Party([
+            'name'          => $order->name,
+            'address'       => $order->alamat,
+            'custom_fields' => [
+                'order number' => $order->no_order,
+            ],
+        ]);
+
+        $items = [];
+
+        foreach ($orderDetail as $detail) {
+            $items[] = InvoiceItem::make($detail->produk->nama_produk)
+                    ->pricePerUnit($detail->produk->harga_produk)
+                    ->quantity($detail->qty);
+        }
+        Log::info($items);
+        
+        $notes = [
+            'Pembayaran hanya ke rekening',
+            'BCA 12345678 a/n Artha Kreasi',
+        ];
+        $notes = implode("<br>", $notes);
+
+        $status_bayar = 'invoices::invoice.paid';
+        if (!$order->status_pembayaran) {
+            $status_bayar = 'invoices::invoice.due';
+        }
+
+        $invoice = Invoice::make('receipt')
+                ->status(__($status_bayar))
+                ->buyer($customer)
+                ->currencySymbol('Rp')
+                ->currencyFormat('{SYMBOL}{VALUE}')
+                ->currencyThousandsSeparator('.')
+                ->currencyDecimalPoint(',')
+                ->filename(trim($order->no_order . ' ' . $customer->name))
+                ->addItems($items)
+                ->notes($notes)
+                ->logo(public_path('vendor/invoices/zeks.T00.png'))
+                ->date($order->created_at)
+                ->dateFormat('d-m-Y')
+                ->save('public');
+
+        $link = $invoice->url();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice Downloaded',
+            'link' => $link,
+        ]);
+    }
+
+    public function updateStatus(Request $request) {
+        $order = Order::find($request->id);
+
+        if($order->status == 'processed') {
+            $order->status = 'shiped';
+            $order->tracking_number = $request->tracking_number;
+        } else if($order->status == 'shiped') {
+            $order->status = 'delivered';
+        }
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status Order Updated',
+        ]);
+    }
+
+    public function completeOrder(Request $request) {
+        $order = Order::find($request->id);
+        $order->status = 'completed';
+        $order->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Order Completed',
+        ]);
+    }
+
+    public function cancelOrder(Request $request) {
+        $order = Order::find($request->id);
+        $order->status = 'canceled';
+        $order->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Order Canceled',
+        ]);
     }
 }

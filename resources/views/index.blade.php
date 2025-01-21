@@ -14,7 +14,7 @@
         </div>
         <!-- Slider Single Item End -->
         <!-- Slider Single Item Start -->
-        <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('assets/images/slider-image/sample-2.jpg') }});">
+        <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('storage/assets/images/slider-image/slider1ed.png') }});">
             <div class="container">
                 <div class="slider-content-1 slider-animated-1 text-left">
                 </div>
