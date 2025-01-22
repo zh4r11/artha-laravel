@@ -14,7 +14,7 @@
         </div>
         <!-- Slider Single Item End -->
         <!-- Slider Single Item Start -->
-        <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('storage/assets/images/slider-image/slider1ed.png') }});">
+        <div class="slider-height-6 d-flex align-items-start justify-content-start bg-img" style="background-image: url({{ asset('storage/assets/images/slider-image/slider2ed.png') }});">
             <div class="container">
                 <div class="slider-content-1 slider-animated-1 text-left">
                 </div>
@@ -144,12 +144,12 @@
             </div>
             <div class="col-md-6 col-xs-12 mt-res-sx-30px">
                 <div class="banner-wrapper">
-                    <a href="shop-4-column.html"><img src="{{ asset('assets/images/banner-image/2.jpg') }}" alt="" /></a>
+                    <a href="shop-4-column.html"><img src="{{ asset('storage/assets/images/banner/banner2coba.png') }}" alt="" /></a>
                 </div>
             </div>
             <div class="col-md-3 col-xs-12 mt-res-sx-30px">
                 <div class="banner-wrapper">
-                    <a href="shop-4-column.html"><img src="{{ asset('assets/images/banner-image/3.jpg') }}" alt="" /></a>
+                    <a href="shop-4-column.html"><img src="{{ asset('storage/assets/images/banner/banner3.png') }}" alt="" /></a>
                 </div>
             </div>
         </div>
