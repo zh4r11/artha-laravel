@@ -10,13 +10,12 @@
                     </div>
                     <!-- footer logo -->
                     <div class="about-footer">
-                        <p class="text-info">We are a team of designers and developers that create high quality HTML template</p>
+                        <p class="text-info">Membawa Warisan Nusantara ke Dalam Genggaman Anda.</p>
                         <div class="need-help">
                             <p class="phone-info">
                                 NEED HELP?
                                 <span>
-                                    (+62) xxxxxxxxxx <br />
-                                    (+62) xxxxxxxxxx
+                                    (+62) 821234567xxx <br />
                                 </span>
                             </p>
                         </div>
