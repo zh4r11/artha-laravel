@@ -8,13 +8,7 @@
       <a href="{{ route('dashboard') }}">ATK</a>
     </div>
     <ul class="sidebar-menu">
-      <li class="nav-item dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
-        <ul class="dropdown-menu">
-          <li><a class="nav-link" href="{{ route('dashboard') }}">Dashboard Penjualan</a></li>
-          <!-- <li><a class="nav-link" href="#">Ecommerce Dashboard</a></li> -->
-        </ul>
-      </li>
+      <li><a class="nav-link" href="{{ route('dashboard') }}" class="nav-link"><i class="fas fa-fire"></i><span>Dashboard</span></a></li>
 
       <li><a class="nav-link" href="{{ route('order.index') }}"><i class="fas fa-shopping-basket"></i> <span>Pesanan</span></a></li>
       <li><a class="nav-link" href="{{ route('pelanggan.index') }}"><i class="fas fa-user"></i> <span>Pelanggan</span></a></li>
