@@ -33,6 +33,8 @@
     
         @include('partials.footer')
     </div>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
     <!--====== Vendors js ======-->
     <script src="{{ asset('assets/js/vendor/jquery-3.5.1.min.js') }}"></script>

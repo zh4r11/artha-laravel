@@ -246,4 +246,38 @@ class OrderController extends Controller
             'message' => 'Order Canceled',
         ]);
     }
+
+    public function fetchTotalOrder() {
+        $total = Order::count();
+        $completed = Order::where('status', 'completed')->count();
+        $canceled = Order::where('status', 'canceled')->count();
+        $new = Order::where('status', 'new')->count();
+        $process = Order::where('status', 'processed')->where('status', 'shiped')->count();
+        $delivered = Order::where('status', 'delivered')->count();
+
+        return response()->json([
+            'total' => $total,
+            'completed' => $completed,
+            'canceled' => $canceled,
+            'new' => $new,
+            'process' => $process,
+            'delivered' => $delivered
+        ], 200);
+    }
+
+    public function getdataChart() {
+        $data = [];
+        $now = date('Y');
+        $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        foreach ($months as $month) {
+            $monthNumber = date('n', strtotime($month));
+            // Cast the sum to an integer
+            $sumTotal = (int) Order::whereYear('created_at', $now)
+                                    ->whereMonth('created_at', $monthNumber)
+                                    ->where('status', 'completed')
+                                    ->sum('total');
+            $data[] = $sumTotal;
+        }
+        return response()->json($data);
+    }
 }

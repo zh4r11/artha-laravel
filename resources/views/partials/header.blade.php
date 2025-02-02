@@ -17,7 +17,11 @@
                             <li class="after-n">
                                 {{-- <a class="angle-icon" href="#">Settings</a> --}}
                                 @if (Auth::check())
-                                    <a href="{{ route('logout') }}">Logout</a>
+                                    {{-- <a href="{{ route('logout') }}">Logout</a> --}}
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                    <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                                 @else
                                     <a href="#" data-toggle="modal" data-target="#authModal">Login</a>
                                 @endif
@@ -83,7 +87,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-           refreshCart() 
+            @if (Auth::check())
+                refreshCart();
+            @endif
         });
         function refreshCart() {
             var Url = "{{ route('cart.index') }}";

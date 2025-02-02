@@ -22,7 +22,7 @@
         <div class="row">
           <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
             <div class="login-brand">
-                <img src="{{ asset('assets/images/logo/logo.jpg') }}" alt="logo" width="100">
+                <img src="{{ asset('storage/assets/images/logo/logoh.png') }}" alt="logo" width="300">
             </div>
 
             <div class="card card-primary">
@@ -37,7 +37,7 @@
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <div class="input-group-text">
-                          <i class="fas fa-mail"></i>
+                          <i class="fas fa-envelope"></i>
                         </div>
                       </div>
                       <input type="email" class="form-control email" id="email" name="email" tabindex="1" placeholder="Email" required autofocus>
@@ -45,13 +45,6 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <div class="d-block">
-                      <div class="float-right">
-                        <a href="auth-forgot-password.html" class="text-small">
-                          Forgot Password?
-                        </a>
-                      </div>
-                    </div>
                     <div class="input-group">
                       <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -72,14 +65,16 @@
               </div>
             </div>
             <div class="simple-footer">
-              Copyright &copy; Prestige Aqiqah 2024
+              {{-- Copyright &copy; Artha Kreasi 2025 --}}
+              &copy; 2025 <div class="bullet"></div> Artha Kreasi</a>
             </div>
           </div>
         </div>
       </div>
     </section>
   </div>
-
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  
   <!-- General JS Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

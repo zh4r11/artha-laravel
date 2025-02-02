@@ -17,7 +17,7 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::post('/login-processed', [AuthController::class, 'login'])->name('login-processed');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/register-buyer', [UserController::class, 'storeBuyer'])->name('register.buyer');
 Route::post('/register-admin', [UserController::class, 'storeAdmin'])->name('register.admin');
@@ -71,5 +71,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::post('/order/update', [OrderController::class, 'update'])->name('order.update');
         Route::delete('/order/{order}', [OrderController::class, 'destroy'])->name('order.destroy');
         Route::post('/order/update-status', [OrderController::class, 'updateStatus'])->name('order.update-status');
+        Route::get('/order-fetchtotal', [OrderController::class, 'fetchTotalOrder'])->name('fetchTotalOrder');
+        Route::get('/order-getdatachart', [OrderController::class, 'getDataChart'])->name('getDataChart');
     });
 });

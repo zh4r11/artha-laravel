@@ -13,11 +13,11 @@
   <h1>Order</h1>
 </div>
 <div class="section-body">
-  <div class="d-flex justify-content-end align-items-center mb-3">
+  {{-- <div class="d-flex justify-content-end align-items-center mb-3">
     <a href="{{ route('order.create') }}" class="btn btn-primary">
       <i class="fas fa-plus"></i> Tambah Order
     </a>
-  </div>
+  </div> --}}
   <div class="row">
     <div class="col-12 col-sm-12 col-lg-12">
       <div class="card">
@@ -30,6 +30,7 @@
                   <th>No. Order</th>
                   <th>Nama</th>
                   <th>Telp</th>
+                  <th>Tanggal Pesan</th>
                   <th>Tracking Number</th>
                   <th>Total</th>
                   <th>Status</th>
@@ -75,14 +76,13 @@
           </tbody>
         </table>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" id='modal-footer'>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" id="updateStatusButton" class="btn btn-primary" data-id="" data-status="" onclick="updateStatusButton(this)">Update Status</button>
+        {{-- <button type="button" id="updateStatusButton" class="btn btn-primary" data-id="" data-status="" onclick="updateStatusButton(this)">Update Status</button> --}}
       </div>
     </div>
   </div>
 </div>
-@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -104,7 +104,7 @@
       columnDefs: [
       {
         targets: [0],
-        width:'15%'
+        width:'5%'
       },
       {
         targets: 1,
@@ -130,8 +130,8 @@
           "data": null,
           "render": function(data, type, row) {
             var buttons = [];
-            buttons.push('<a href="#" data-id="' + row.id + '" onclick="EditOrder(this)">Edit</a>&nbsp;&nbsp;');
-            buttons.push('<a href="#" data-id="' + row.id + '" onclick="UpdateOrder(this)">Update</a>&nbsp;&nbsp;');
+            // buttons.push('<a href="#" data-id="' + row.id + '" onclick="EditOrder(this)">Edit</a>&nbsp;&nbsp;');
+            // buttons.push('<a href="#" data-id="' + row.id + '" onclick="UpdateOrder(this)">Update</a>&nbsp;&nbsp;');
             buttons.push('<a href="#" data-id="' + row.id + '" onclick="DetailOrder(this)">Detail</a>&nbsp;&nbsp;');
             return buttons.join(' ');
           }
@@ -144,6 +144,16 @@
         },
         {
           data: 'telepon'
+        },
+        {
+          data: 'created_at',
+          render: function(data, type, row) {
+            var date = new Date(data);
+            var day = date.getDate();
+            var month = date.toLocaleString('default', { month: 'long' });
+            var year = date.getFullYear();
+            return day + ' ' + month + ' ' + year;
+          }
         },
         {
           data: 'tracking_number'
@@ -277,9 +287,17 @@
             } else {
               $('#orderDetailsBody').append('<tr><td colspan="2">No details available</td></tr>');
             }
+            $('#modal-footer').empty();
+            if( data.status != 'completed' && data.status != 'canceled' && data.status != 'new' && data.status != 'delivered') {
+              $('#modal-footer').append('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>');
+              $('#modal-footer').append('<button type="button" id="updateStatusButton" class="btn btn-primary" data-id="'+data.id+'" data-status="'+data.status+'" onclick="updateStatusButton(this)">Update Status</button>');
+            }else {
+              $('#modal-footer').append('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>');
+            }
             $('#orderDetailModal').modal('show');
           });
           
+            
         }
       });
     }
