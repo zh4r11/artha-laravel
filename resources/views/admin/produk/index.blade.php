@@ -34,7 +34,6 @@
                   <th>Nama Produk</th>
                   <th>Harga Produk</th>
                   <th>Harga Diskon</th>
-                  <th>Stok</th>
                 </tr>
               </thead>
               <tbody>
@@ -115,9 +114,6 @@
         {
           data: 'harga_diskon',
           render: $.fn.dataTable.render.number(',', '.', 0, 'Rp. ')
-        },
-        {
-          data: 'qty_produk'
         },
       ]
     });
