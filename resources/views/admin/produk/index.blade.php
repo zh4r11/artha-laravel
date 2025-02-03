@@ -66,10 +66,6 @@
       responsive: true,
       scrollX: false,
       columnDefs: [
-     {
-        width: '5%',
-        targets: [5]
-      },
       {
         targets: [1],
         visible: false
